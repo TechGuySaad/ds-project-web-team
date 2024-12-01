@@ -59,9 +59,7 @@ function Dashboard() {
             className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
             onClick={() => handleNavigation("/temperature-trend")}
           >
-            <h2 className="text-center text-lg font-bold">
-              Temperature Trends
-            </h2>
+            <h2 className="text-center text-lg font-bold">Weather</h2>
           </div>
           <div
             className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"

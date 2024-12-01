@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import axios from "axios"; // For making API requests
-import BoxPlot from "./AirQualityCharts/BoxPlot";
-import TimeSeries from "./AirQualityCharts/TimeSeries";
-import Histogram from "./AirQualityCharts/Histogram";
-import SeasonalTrends from "./AirQualityCharts/SeasonalTrends";
-import SeasonalBarChart from "./AirQualityCharts/SeasonalBarChart";
+import axios from "axios";
+import BarChart from "./Weather/BarChart";
+import TimeSeries from "./Weather/TimeSeries";
+import PrecipitationTrends from "./Weather/PrecipitationTrends";
+import WindSpeedTrends from "./Weather/WindSpeedTrends";
+import AirPressureTrends from "./Weather/AirPressureTrends";
 
 function TemperatureTrend() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [selectedCity, setSelectedCity] = useState("Lahore"); // Default city
-  const [cityData, setCityData] = useState(null); // Data fetched from the API
+  const [selectedCity, setSelectedCity] = useState("Lahore");
+  const [cityData, setCityData] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,29 +19,22 @@ function TemperatureTrend() {
   }, []);
 
   useEffect(() => {
-    // Fetch data for the selected city
+    // Fetch data for the selected city from the Flask server
     const fetchCityData = async () => {
       try {
-        const responses = await Promise.all([
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/boxplot`),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/timeseries`
-          ),
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/histogram`),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonaltrends`
-          ),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonalbarchart`
-          ),
-        ]);
+        const response = await axios.get(
+          `http://127.0.0.1:5000/api/data/${selectedCity}`
+        );
 
         setCityData({
-          boxPlotData: responses[0].data.boxPlotData,
-          timeSeriesData: responses[1].data.timeSeriesData,
-          histogramData: responses[2].data.histogramData,
-          seasonalTrendsData: responses[3].data.seasonalTrendsData,
-          barChartData: responses[4].data.seasonalBarChartData,
+          dates: response.data.dates,
+          temperatures: response.data.avg_temp,
+          avgTemp:
+            response.data.avg_temp.reduce((a, b) => a + b, 0) /
+            response.data.avg_temp.length,
+          precipitation: response.data.prcp,
+          windSpeed: response.data.wind_spd,
+          airPressure: response.data.air_pres,
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,7 +56,6 @@ function TemperatureTrend() {
 
   return (
     <div className="min-h-screen w-full bg-[#0a192f] text-white">
-      {/* Header */}
       <header className="p-4 border-b border-[#1e3a5f]">
         <div className="flex justify-between items-center mx-auto">
           <div className="flex items-center gap-4">
@@ -84,9 +76,7 @@ function TemperatureTrend() {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="h-full w-full px-6 py-6 grid grid-cols-4 gap-6">
-        {/* Sidebar */}
         <div className="col-span-1 space-y-6">
           <div className="bg-[#0f2744] p-4 border border-[#1e3a5f]">
             <h2 className="text-lg font-bold">Location</h2>
@@ -111,39 +101,35 @@ function TemperatureTrend() {
           </div>
         </div>
 
-        {/* Charts Section */}
         <div className="col-span-3 overflow-y-auto max-h-[80vh] grid grid-cols-1 gap-6">
           {cityData ? (
             <>
               <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
                 <TimeSeries
-                  data={cityData.timeSeriesData}
-                  title={`Time Series of PM 2.5 Levels in ${selectedCity}`}
+                  city={selectedCity}
+                  dates={cityData.dates}
+                  temperatures={cityData.temperatures}
                 />
               </div>
               <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <SeasonalTrends
-                  data={cityData.seasonalTrendsData}
-                  title={`Seasonal Trends of PM 2.5 Levels in ${selectedCity}`}
+                <BarChart city={selectedCity} temperature={cityData.avgTemp} />
+              </div>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <PrecipitationTrends
+                  dates={cityData.dates}
+                  precipitation={cityData.precipitation}
                 />
               </div>
               <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <SeasonalBarChart
-                  data={cityData.barChartData}
-                  title={`Seasonal PM 2.5 Levels in ${selectedCity}`}
+                <WindSpeedTrends
+                  dates={cityData.dates}
+                  windSpeed={cityData.windSpeed}
                 />
               </div>
               <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <BoxPlot
-                  data={cityData.boxPlotData}
-                  title={`PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <Histogram
-                  data={cityData.histogramData}
-                  title={`Distribution of PM 2.5 Levels in ${selectedCity}`}
+                <AirPressureTrends
+                  dates={cityData.dates}
+                  airPressure={cityData.airPressure}
                 />
               </div>
             </>
