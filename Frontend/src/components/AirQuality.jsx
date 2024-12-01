@@ -112,9 +112,15 @@ function AirQuality() {
         </div>
 
         {/* Charts Section */}
-        <div className="col-span-3 grid grid-cols-1 gap-6">
+        <div className="col-span-3 overflow-y-auto max-h-[80vh] grid grid-cols-1 gap-6">
           {cityData ? (
             <>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <TimeSeries
+                  data={cityData.timeSeriesData}
+                  title={`Time Series of PM 2.5 Levels in ${selectedCity}`}
+                />
+              </div>
               <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
                 <SeasonalTrends
                   data={cityData.seasonalTrendsData}
@@ -133,12 +139,7 @@ function AirQuality() {
                   title={`PM 2.5 Levels in ${selectedCity}`}
                 />
               </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <TimeSeries
-                  data={cityData.timeSeriesData}
-                  title={`Time Series of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
+
               <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
                 <Histogram
                   data={cityData.histogramData}
