@@ -1,0 +1,6 @@
+requests
+pandas
+requests
+matplotlib
+seaborn
+folium
