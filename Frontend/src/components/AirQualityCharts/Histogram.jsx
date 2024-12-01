@@ -1,15 +1,14 @@
 import Plot from "react-plotly.js";
 
-function Histogram() {
-  // Sample PM 2.5 data for Lahore
-  const lahoreData = [
-    150, 160, 120, 140, 180, 200, 220, 240, 180, 190, 200, 210, 250, 270, 300,
-    200, 180, 190, 170, 160, 150, 190, 200, 210, 220, 300, 290, 280, 260,
-  ];
+function Histogram({ data, title }) {
+  // Fallback in case no data is provided (e.g., while loading)
+  if (!data) {
+    return <p className="text-center text-white">Loading...</p>;
+  }
 
   const histogramData = [
     {
-      x: lahoreData,
+      x: data, // Dynamic data passed as a prop
       type: "histogram",
       name: "PM 2.5 Levels",
       marker: { color: "rgba(148, 0, 211, 0.7)" }, // Purple
@@ -18,7 +17,7 @@ function Histogram() {
 
   const kdeData = [
     {
-      x: lahoreData,
+      x: data, // Same data for KDE
       type: "scatter",
       mode: "lines",
       line: { shape: "spline", color: "purple" },
@@ -27,7 +26,7 @@ function Histogram() {
   ];
 
   const layout = {
-    title: "Distribution of PM 2.5 Levels in Lahore",
+    title: title || "Distribution of PM 2.5 Levels", // Dynamic title
     xaxis: { title: "PM 2.5 Count" },
     yaxis: { title: "Frequency" },
     paper_bgcolor: "#0a192f",

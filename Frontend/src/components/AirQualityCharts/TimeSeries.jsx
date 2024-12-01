@@ -1,34 +1,25 @@
 import Plot from "react-plotly.js";
 
-function TimeSeries() {
-  // Sample data for Lahore
-  const data = [
+function TimeSeries({ data, title }) {
+  // Fallback in case no data is provided (e.g., while loading)
+  if (!data || !data.dates || !data.counts) {
+    return <p className="text-center text-white">Loading...</p>;
+  }
+
+  const plotData = [
     {
-      x: [
-        "2019-05-01",
-        "2019-06-01",
-        "2019-07-01",
-        "2019-08-01",
-        "2019-09-01",
-        "2019-10-01",
-        "2019-11-01",
-        "2019-12-01",
-        "2020-01-01",
-        "2020-02-01",
-        "2020-03-01",
-        "2020-04-01",
-      ], // Dates
-      y: [150, 180, 120, 200, 230, 300, 350, 400, 250, 220, 190, 170], // PM 2.5 levels
+      x: data.dates, // Dynamic dates from data
+      y: data.counts, // Dynamic counts from data
       type: "scatter",
       mode: "lines+markers",
-      name: "Lahore",
+      name: "PM 2.5 Levels",
       line: { color: "blue" },
       marker: { color: "blue" },
     },
   ];
 
   const layout = {
-    title: "Time Series of PM 2.5 Levels in Lahore",
+    title: title || "Time Series of PM 2.5 Levels", // Dynamic title
     xaxis: { title: "Date" },
     yaxis: { title: "PM 2.5 Count" },
     paper_bgcolor: "#0a192f",
@@ -39,7 +30,7 @@ function TimeSeries() {
   return (
     <div className="bg-[#0f2744] h-full border border-[#1e3a5f] p-6">
       <Plot
-        data={data}
+        data={plotData}
         layout={layout}
         style={{ width: "100%", height: "100%" }}
       />

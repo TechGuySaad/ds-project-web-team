@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-
+import axios from "axios"; // For making API requests
 import BoxPlot from "./AirQualityCharts/BoxPlot";
-
 import TimeSeries from "./AirQualityCharts/TimeSeries";
 import Histogram from "./AirQualityCharts/Histogram";
 import SeasonalTrends from "./AirQualityCharts/SeasonalTrends";
 import SeasonalBarChart from "./AirQualityCharts/SeasonalBarChart";
 
-function Dashboard() {
+function AirQuality() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [selectedCity, setSelectedCity] = useState("Lahore"); // Default city
+  const [cityData, setCityData] = useState(null); // Data fetched from the API
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,11 +18,48 @@ function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    // Fetch data for the selected city
+    const fetchCityData = async () => {
+      try {
+        const responses = await Promise.all([
+          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/boxplot`),
+          axios.get(
+            `http://127.0.0.1:5000/api/data/${selectedCity}/timeseries`
+          ),
+          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/histogram`),
+          axios.get(
+            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonaltrends`
+          ),
+          axios.get(
+            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonalbarchart`
+          ),
+        ]);
+
+        setCityData({
+          boxPlotData: responses[0].data.boxPlotData,
+          timeSeriesData: responses[1].data.timeSeriesData,
+          histogramData: responses[2].data.histogramData,
+          seasonalTrendsData: responses[3].data.seasonalTrendsData,
+          barChartData: responses[4].data.seasonalBarChartData,
+        });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCityData();
+  }, [selectedCity]);
+
   const formattedDate = currentTime.toLocaleDateString("en-CA");
   const formattedTime = currentTime.toLocaleTimeString();
   const formattedDay = currentTime.toLocaleDateString("en-US", {
     weekday: "short",
   });
+
+  const handleCityChange = (city) => {
+    setSelectedCity(city);
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#0a192f] text-white">
@@ -57,7 +95,13 @@ function Dashboard() {
                 (city) => (
                   <li key={city}>
                     <label className="flex items-center gap-2">
-                      <input type="radio" name="location" />
+                      <input
+                        type="radio"
+                        name="location"
+                        value={city}
+                        checked={selectedCity === city}
+                        onChange={() => handleCityChange(city)}
+                      />
                       {city}
                     </label>
                   </li>
@@ -69,25 +113,46 @@ function Dashboard() {
 
         {/* Charts Section */}
         <div className="col-span-3 grid grid-cols-1 gap-6">
-          <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-            <BoxPlot />
-          </div>
-          <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-            <TimeSeries />
-          </div>
-          <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-            <Histogram />
-          </div>
-          <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-            <SeasonalTrends />
-          </div>
-          <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-            <SeasonalBarChart />
-          </div>
+          {cityData ? (
+            <>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <SeasonalTrends
+                  data={cityData.seasonalTrendsData}
+                  title={`Seasonal Trends of PM 2.5 Levels in ${selectedCity}`}
+                />
+              </div>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <SeasonalBarChart
+                  data={cityData.barChartData}
+                  title={`Seasonal PM 2.5 Levels in ${selectedCity}`}
+                />
+              </div>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <BoxPlot
+                  data={cityData.boxPlotData}
+                  title={`PM 2.5 Levels in ${selectedCity}`}
+                />
+              </div>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <TimeSeries
+                  data={cityData.timeSeriesData}
+                  title={`Time Series of PM 2.5 Levels in ${selectedCity}`}
+                />
+              </div>
+              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
+                <Histogram
+                  data={cityData.histogramData}
+                  title={`Distribution of PM 2.5 Levels in ${selectedCity}`}
+                />
+              </div>
+            </>
+          ) : (
+            <p className="text-center text-white">Loading data...</p>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-export default Dashboard;
+export default AirQuality;

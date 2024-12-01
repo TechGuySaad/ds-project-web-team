@@ -1,22 +1,22 @@
 import Plot from "react-plotly.js";
 
-function LahoreSeasonalBarChart() {
-  // Seasons and PM 2.5 data for Lahore
-  const seasons = ["Autumn", "Spring", "Summer", "Winter"];
-  const lahoreData = [220, 150, 170, 250]; // Average PM 2.5 counts for each season
+function SeasonalBarChart({ data, title }) {
+  if (!data || !data.seasons || !data.averages) {
+    return <p className="text-center text-white">Loading...</p>;
+  }
 
-  const data = [
+  const chartData = [
     {
-      x: seasons,
-      y: lahoreData,
+      x: data.seasons, // Dynamic seasons
+      y: data.averages, // Dynamic averages
       type: "bar",
-      name: "Lahore",
+      name: "PM 2.5 Levels",
       marker: { color: "rgb(31, 119, 180)" },
     },
   ];
 
   const layout = {
-    title: "Seasonal Trends of PM 2.5 Levels in Lahore",
+    title: title || "Seasonal Trends of PM 2.5 Levels", // Dynamic title
     xaxis: { title: "Season" },
     yaxis: { title: "Average PM 2.5 Count" },
     paper_bgcolor: "#0a192f",
@@ -27,7 +27,7 @@ function LahoreSeasonalBarChart() {
   return (
     <div className="bg-[#0f2744] h-full border border-[#1e3a5f] p-6">
       <Plot
-        data={data}
+        data={chartData}
         layout={layout}
         style={{ width: "100%", height: "100%" }}
       />
@@ -35,4 +35,4 @@ function LahoreSeasonalBarChart() {
   );
 }
 
-export default LahoreSeasonalBarChart;
+export default SeasonalBarChart;

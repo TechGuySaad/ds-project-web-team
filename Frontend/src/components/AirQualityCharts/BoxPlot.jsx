@@ -1,17 +1,18 @@
 import Plot from "react-plotly.js";
 
-function BoxPlot() {
-  const data = [
+function BoxPlot({ data, title }) {
+  // Use a different variable name for the data passed to Plotly
+  const plotData = [
     {
-      y: [200, 150, 300, 250, 400, 100, 350], // Data for Lahore
+      y: data, // Use the data passed as props
       type: "box",
-      name: "Lahore",
+      name: "PM 2.5 Levels",
       marker: { color: "rgb(31, 119, 180)" },
     },
   ];
 
   const layout = {
-    title: "PM 2.5 Levels in Lahore",
+    title: title || "PM 2.5 Levels", // Dynamic title
     xaxis: { title: "City" },
     yaxis: { title: "PM 2.5 Count" },
     paper_bgcolor: "#0a192f",
@@ -22,7 +23,7 @@ function BoxPlot() {
   return (
     <div className="bg-[#0f2744] h-full border border-[#1e3a5f] p-6">
       <Plot
-        data={data}
+        data={plotData} // Use the renamed variable here
         layout={layout}
         style={{ width: "100%", height: "100%" }}
       />
