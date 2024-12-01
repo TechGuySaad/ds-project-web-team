@@ -16,7 +16,7 @@ function Dashboard() {
       setCurrentTime(new Date());
     }, 1000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    return () => clearInterval(interval); // Cleanup the interval on unmount
   }, []);
 
   const formattedDate = currentTime.toLocaleDateString("en-CA"); // Format: YYYY/MM/DD
