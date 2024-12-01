@@ -1,29 +1,26 @@
 import { useState, useEffect } from "react";
-import AirQuality from "./components/AirQuality";
-import TemperatureTrend from "./components/TemperatureTrend";
-import EnergyConsumption from "./components/EnergyConsumption";
-import TrafficFlow from "./components/TrafficFlow";
-import PollutionHotspot from "./components/PollutionHotspot";
-import Weather from "./components/Weather";
-import NoiseLevel from "./components/NoiseLevel";
-import HumidityLevel from "./components/HumidityLevel";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
-
-    return () => clearInterval(interval); // Cleanup the interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
-  const formattedDate = currentTime.toLocaleDateString("en-CA"); // Format: YYYY/MM/DD
-  const formattedTime = currentTime.toLocaleTimeString(); // Format: HH:MM:SS
+  const formattedDate = currentTime.toLocaleDateString("en-CA");
+  const formattedTime = currentTime.toLocaleTimeString();
   const formattedDay = currentTime.toLocaleDateString("en-US", {
     weekday: "short",
-  }); // Format: Mon, Tue, etc.
+  });
+
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#0a192f] text-white">
@@ -49,37 +46,61 @@ function Dashboard() {
       </header>
 
       {/* Main Content */}
-      <div className="h-full w-full px-6 py-6 grid grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="col-span-1 space-y-6">
-          {/* Location */}
-          <div className="bg-[#0f2744] p-4 border border-[#1e3a5f]">
-            <h2 className="text-lg font-bold">Location</h2>
-            <ul className="space-y-2 mt-4">
-              {["Islamabad", "Karachi", "Lahore", "Peshawar", "Quetta"].map(
-                (city) => (
-                  <li key={city}>
-                    <label className="flex items-center gap-2">
-                      <input type="radio" name="location" />
-                      {city}
-                    </label>
-                  </li>
-                )
-              )}
-            </ul>
-          </div>
-        </div>
-
+      <div className="h-full w-full px-6 py-6 flex justify-center">
         {/* Charts Section */}
-        <div className="col-span-3 grid grid-cols-1 gap-6">
-          <AirQuality />
-          <TemperatureTrend />
-          <EnergyConsumption />
-          <TrafficFlow />
-          <PollutionHotspot />
-          <Weather />
-          <NoiseLevel />
-          <HumidityLevel />
+        <div className="grid grid-cols-2 gap-6">
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer w-96"
+            onClick={() => handleNavigation("/air-quality")}
+          >
+            <h2 className="text-center text-lg font-bold">Air Quality</h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/temperature-trend")}
+          >
+            <h2 className="text-center text-lg font-bold">
+              Temperature Trends
+            </h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/energy-consumption")}
+          >
+            <h2 className="text-center text-lg font-bold">
+              Energy Consumption
+            </h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/traffic-flow")}
+          >
+            <h2 className="text-center text-lg font-bold">Traffic Flow</h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/pollution-hotspot")}
+          >
+            <h2 className="text-center text-lg font-bold">Pollution Hotspot</h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/weather")}
+          >
+            <h2 className="text-center text-lg font-bold">Weather</h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/noise-level")}
+          >
+            <h2 className="text-center text-lg font-bold">Noise Level</h2>
+          </div>
+          <div
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            onClick={() => handleNavigation("/humidity-level")}
+          >
+            <h2 className="text-center text-lg font-bold">Humidity Level</h2>
+          </div>
         </div>
       </div>
     </div>
