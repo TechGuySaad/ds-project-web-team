@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCloud,
+  faThermometerHalf,
+  faCar,
+  faExclamationTriangle,
+  faVolumeUp,
+  faTint,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -50,48 +59,47 @@ function Dashboard() {
         {/* Charts Section */}
         <div className="grid grid-cols-2 gap-6">
           <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer w-96"
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer w-96 flex flex-col items-center justify-center gap-4"
             onClick={() => handleNavigation("/air-quality")}
           >
+            <FontAwesomeIcon icon={faCloud} size="3x" />
             <h2 className="text-center text-lg font-bold">Air Quality</h2>
           </div>
           <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer flex flex-col items-center justify-center gap-4"
             onClick={() => handleNavigation("/temperature-trend")}
           >
+            <FontAwesomeIcon icon={faThermometerHalf} size="3x" />
             <h2 className="text-center text-lg font-bold">Weather</h2>
           </div>
+
           <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
-            onClick={() => handleNavigation("/energy-consumption")}
-          >
-            <h2 className="text-center text-lg font-bold">
-              Energy Consumption
-            </h2>
-          </div>
-          <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer flex flex-col items-center justify-center gap-4"
             onClick={() => handleNavigation("/traffic-flow")}
           >
+            <FontAwesomeIcon icon={faCar} size="3x" />
             <h2 className="text-center text-lg font-bold">Traffic Flow</h2>
           </div>
           <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer flex flex-col items-center justify-center gap-4"
             onClick={() => handleNavigation("/pollution-hotspot")}
           >
+            <FontAwesomeIcon icon={faExclamationTriangle} size="3x" />
             <h2 className="text-center text-lg font-bold">Pollution Hotspot</h2>
           </div>
 
           <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer flex flex-col items-center justify-center gap-4"
             onClick={() => handleNavigation("/noise-level")}
           >
+            <FontAwesomeIcon icon={faVolumeUp} size="3x" />
             <h2 className="text-center text-lg font-bold">Noise Level</h2>
           </div>
           <div
-            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer"
+            className="bg-[#0f2744] h-48 border border-[#1e3a5f] p-6 cursor-pointer flex flex-col items-center justify-center gap-4"
             onClick={() => handleNavigation("/humidity-level")}
           >
+            <FontAwesomeIcon icon={faTint} size="3x" />
             <h2 className="text-center text-lg font-bold">Humidity Level</h2>
           </div>
         </div>
