@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
-import axios from "axios"; // For making API requests
-import BoxPlot from "./AirQualityCharts/BoxPlot";
-import TimeSeries from "./AirQualityCharts/TimeSeries";
-import Histogram from "./AirQualityCharts/Histogram";
-import SeasonalTrends from "./AirQualityCharts/SeasonalTrends";
-import SeasonalBarChart from "./AirQualityCharts/SeasonalBarChart";
+import Humidity from "./NoiseLevel/Humidity";
 
-function HumidityLevel() {
+function NoiseLevel() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedCity, setSelectedCity] = useState("Lahore"); // Default city
-  const [cityData, setCityData] = useState(null); // Data fetched from the API
+  const [humidityData, setHumidityData] = useState([]); // Data for Humidity component
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -19,36 +14,37 @@ function HumidityLevel() {
   }, []);
 
   useEffect(() => {
-    // Fetch data for the selected city
-    const fetchCityData = async () => {
-      try {
-        const responses = await Promise.all([
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/boxplot`),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/timeseries`
-          ),
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/histogram`),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonaltrends`
-          ),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonalbarchart`
-          ),
-        ]);
-
-        setCityData({
-          boxPlotData: responses[0].data.boxPlotData,
-          timeSeriesData: responses[1].data.timeSeriesData,
-          histogramData: responses[2].data.histogramData,
-          seasonalTrendsData: responses[3].data.seasonalTrendsData,
-          barChartData: responses[4].data.seasonalBarChartData,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+    // Define dummy data for cities
+    const cityDummyData = {
+      Islamabad: [
+        { City: "Islamabad", Humidity: 72 },
+        // { City: "Rawalpindi", Humidity: 68 },
+        // { City: "Murree", Humidity: 80 },
+      ],
+      Karachi: [
+        { City: "Karachi", Humidity: 82 },
+        // { City: "Hyderabad", Humidity: 76 },
+        // { City: "Thatta", Humidity: 78 },
+      ],
+      Lahore: [
+        { City: "Lahore", Humidity: 65 },
+        // { City: "Sheikhupura", Humidity: 60 },
+        // { City: "Kasur", Humidity: 62 },
+      ],
+      Peshawar: [
+        { City: "Peshawar", Humidity: 55 },
+        // { City: "Mardan", Humidity: 58 },
+        // { City: "Kohat", Humidity: 57 },
+      ],
+      Quetta: [
+        { City: "Quetta", Humidity: 45 },
+        // { City: "Zhob", Humidity: 42 },
+        // { City: "Chaman", Humidity: 48 },
+      ],
     };
 
-    fetchCityData();
+    // Set humidity data for the selected city
+    setHumidityData(cityDummyData[selectedCity]);
   }, [selectedCity]);
 
   const formattedDate = currentTime.toLocaleDateString("en-CA");
@@ -113,47 +109,13 @@ function HumidityLevel() {
 
         {/* Charts Section */}
         <div className="col-span-3 overflow-y-auto max-h-[80vh] grid grid-cols-1 gap-6">
-          {cityData ? (
-            <>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <TimeSeries
-                  data={cityData.timeSeriesData}
-                  title={`Time Series of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <SeasonalTrends
-                  data={cityData.seasonalTrendsData}
-                  title={`Seasonal Trends of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <SeasonalBarChart
-                  data={cityData.barChartData}
-                  title={`Seasonal PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <BoxPlot
-                  data={cityData.boxPlotData}
-                  title={`PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <Histogram
-                  data={cityData.histogramData}
-                  title={`Distribution of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-            </>
-          ) : (
-            <p className="text-center text-white">Loading data...</p>
-          )}
+          <div className="bg-[#0f2744] h-fit border border-[#1e3a5f] p-6 cursor-pointer">
+            <Humidity data={humidityData} />
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default HumidityLevel;
+export default NoiseLevel;
