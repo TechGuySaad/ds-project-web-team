@@ -1,15 +1,47 @@
 import { useState, useEffect } from "react";
-import axios from "axios"; // For making API requests
-import BoxPlot from "./AirQualityCharts/BoxPlot";
-import TimeSeries from "./AirQualityCharts/TimeSeries";
-import Histogram from "./AirQualityCharts/Histogram";
-import SeasonalTrends from "./AirQualityCharts/SeasonalTrends";
-import SeasonalBarChart from "./AirQualityCharts/SeasonalBarChart";
+import LineChart from "./Traffic/LineChart";
+import BarChart from "./Traffic/BarChart";
 
 function TrafficFlow() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedCity, setSelectedCity] = useState("Lahore"); // Default city
-  const [cityData, setCityData] = useState(null); // Data fetched from the API
+  const [cityList] = useState([
+    "Islamabad",
+    "Karachi",
+    "Lahore",
+    "Peshawar",
+    "Quetta",
+  ]);
+  const [lineChartData, setLineChartData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
+
+  useEffect(() => {
+    // Fetch data for LineChart from Flask API with the selected city as a query parameter
+    fetch(`http://127.0.0.1:5000/api/monthly-congestion?city=${selectedCity}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setLineChartData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data for LineChart:", error);
+      });
+  }, [selectedCity]);
+
+  useEffect(() => {
+    // Fetch data for BarChart from Flask API
+    fetch("http://127.0.0.1:5000/api/city-congestion-bar")
+      .then((response) => response.json())
+      .then((data) => {
+        // Filter bar chart data for the selected city
+        const filteredData = data.filter(
+          (item) => item.location === selectedCity
+        );
+        setBarChartData(filteredData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data for BarChart:", error);
+      });
+  }, [selectedCity]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,39 +49,6 @@ function TrafficFlow() {
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    // Fetch data for the selected city
-    const fetchCityData = async () => {
-      try {
-        const responses = await Promise.all([
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/boxplot`),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/timeseries`
-          ),
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/histogram`),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonaltrends`
-          ),
-          axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonalbarchart`
-          ),
-        ]);
-
-        setCityData({
-          boxPlotData: responses[0].data.boxPlotData,
-          timeSeriesData: responses[1].data.timeSeriesData,
-          histogramData: responses[2].data.histogramData,
-          seasonalTrendsData: responses[3].data.seasonalTrendsData,
-          barChartData: responses[4].data.seasonalBarChartData,
-        });
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchCityData();
-  }, [selectedCity]);
 
   const formattedDate = currentTime.toLocaleDateString("en-CA");
   const formattedTime = currentTime.toLocaleTimeString();
@@ -91,65 +90,32 @@ function TrafficFlow() {
           <div className="bg-[#0f2744] p-4 border border-[#1e3a5f]">
             <h2 className="text-lg font-bold">Location</h2>
             <ul className="space-y-2 mt-4">
-              {["Islamabad", "Karachi", "Lahore", "Peshawar", "Quetta"].map(
-                (city) => (
-                  <li key={city}>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name="location"
-                        value={city}
-                        checked={selectedCity === city}
-                        onChange={() => handleCityChange(city)}
-                      />
-                      {city}
-                    </label>
-                  </li>
-                )
-              )}
+              {cityList.map((city) => (
+                <li key={city}>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name="location"
+                      value={city}
+                      checked={selectedCity === city}
+                      onChange={() => handleCityChange(city)}
+                    />
+                    {city}
+                  </label>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
 
         {/* Charts Section */}
         <div className="col-span-3 overflow-y-auto max-h-[80vh] grid grid-cols-1 gap-6">
-          {cityData ? (
-            <>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <TimeSeries
-                  data={cityData.timeSeriesData}
-                  title={`Time Series of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <SeasonalTrends
-                  data={cityData.seasonalTrendsData}
-                  title={`Seasonal Trends of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <SeasonalBarChart
-                  data={cityData.barChartData}
-                  title={`Seasonal PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <BoxPlot
-                  data={cityData.boxPlotData}
-                  title={`PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-
-              <div className="bg-[#0f2744] h-96 border border-[#1e3a5f] p-6 cursor-pointer">
-                <Histogram
-                  data={cityData.histogramData}
-                  title={`Distribution of PM 2.5 Levels in ${selectedCity}`}
-                />
-              </div>
-            </>
-          ) : (
-            <p className="text-center text-white">Loading data...</p>
-          )}
+          <div className="bg-[#0f2744] h-fill border border-[#1e3a5f]  cursor-pointer">
+            <LineChart data={lineChartData} />
+          </div>
+          <div className="bg-[#0f2744] h-fill border border-[#1e3a5f]  cursor-pointer">
+            <BarChart data={barChartData} />
+          </div>
         </div>
       </div>
     </div>
