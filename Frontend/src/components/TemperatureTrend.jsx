@@ -5,7 +5,7 @@ import TimeSeries from "./Weather/TimeSeries";
 import PrecipitationTrends from "./Weather/PrecipitationTrends";
 import WindSpeedTrends from "./Weather/WindSpeedTrends";
 import AirPressureTrends from "./Weather/AirPressureTrends";
-
+import { FaHome } from "react-icons/fa";
 function TemperatureTrend() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedCity, setSelectedCity] = useState("Lahore");
@@ -23,7 +23,7 @@ function TemperatureTrend() {
     const fetchCityData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:5000/api/data/${selectedCity}`
+          `http://127.0.0.1:5001/api/data/${selectedCity}`
         );
 
         setCityData({
@@ -67,10 +67,11 @@ function TemperatureTrend() {
             Smart City Environment Monitoring System
           </h1>
           <div className="flex items-center gap-2">
-            <span>Cloudy</span>
-            <span>67F-71F</span>
             <a href="/" className="ml-2">
-              <span className="h-4 w-4">🏠</span>
+              <span className="h-4 w-4">
+                {" "}
+                <FaHome size={20} color="#FFFFFF" />
+              </span>
             </a>
           </div>
         </div>

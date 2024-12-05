@@ -5,6 +5,7 @@ import TimeSeries from "./AirQualityCharts/TimeSeries";
 import Histogram from "./AirQualityCharts/Histogram";
 import SeasonalTrends from "./AirQualityCharts/SeasonalTrends";
 import SeasonalBarChart from "./AirQualityCharts/SeasonalBarChart";
+import { FaHome } from "react-icons/fa";
 
 function Weather() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -23,16 +24,16 @@ function Weather() {
     const fetchCityData = async () => {
       try {
         const responses = await Promise.all([
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/boxplot`),
+          axios.get(`http://127.0.0.1:5001/api/data/${selectedCity}/boxplot`),
           axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/timeseries`
+            `http://127.0.0.1:5001/api/data/${selectedCity}/timeseries`
           ),
-          axios.get(`http://127.0.0.1:5000/api/data/${selectedCity}/histogram`),
+          axios.get(`http://127.0.0.1:5001/api/data/${selectedCity}/histogram`),
           axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonaltrends`
+            `http://127.0.0.1:5001/api/data/${selectedCity}/seasonaltrends`
           ),
           axios.get(
-            `http://127.0.0.1:5000/api/data/${selectedCity}/seasonalbarchart`
+            `http://127.0.0.1:5001/api/data/${selectedCity}/seasonalbarchart`
           ),
         ]);
 
@@ -75,10 +76,11 @@ function Weather() {
             Smart City Environment Monitoring System
           </h1>
           <div className="flex items-center gap-2">
-            <span>Cloudy</span>
-            <span>67F-71F</span>
             <a href="/" className="ml-2">
-              <span className="h-4 w-4">🏠</span>
+              <span className="h-4 w-4">
+                {" "}
+                <FaHome size={20} color="#FFFFFF" />
+              </span>
             </a>
           </div>
         </div>

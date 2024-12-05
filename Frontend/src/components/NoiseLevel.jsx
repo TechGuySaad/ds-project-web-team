@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import Humidity from "./NoiseLevel/Humidity";
+// import Humidity from "./NoiseLevel/Humidity";
 import AirQuality from "./NoiseLevel/AirQualityNoise";
-
+import { FaHome } from "react-icons/fa";
 function NoiseLevel() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedCity, setSelectedCity] = useState("Lahore"); // Default city
-  const [humidityData, setHumidityData] = useState([]); // Data for Humidity component
+
   const [noiseData, setNoiseData] = useState([]); // Data for Noise component
 
   useEffect(() => {
@@ -17,13 +17,13 @@ function NoiseLevel() {
 
   useEffect(() => {
     // Define dummy data for humidity
-    const cityHumidityData = {
-      Islamabad: [{ City: "Islamabad", Humidity: 72 }],
-      Karachi: [{ City: "Karachi", Humidity: 82 }],
-      Lahore: [{ City: "Lahore", Humidity: 65 }],
-      Peshawar: [{ City: "Peshawar", Humidity: 55 }],
-      Quetta: [{ City: "Quetta", Humidity: 45 }],
-    };
+    // const cityHumidityData = {
+    //   Islamabad: [{ City: "Islamabad", Humidity: 72 }],
+    //   Karachi: [{ City: "Karachi", Humidity: 82 }],
+    //   Lahore: [{ City: "Lahore", Humidity: 65 }],
+    //   Peshawar: [{ City: "Peshawar", Humidity: 55 }],
+    //   Quetta: [{ City: "Quetta", Humidity: 45 }],
+    // };
 
     // Define dummy data for noise levels
     const cityNoiseData = {
@@ -65,7 +65,7 @@ function NoiseLevel() {
     };
 
     // Set data for the selected city
-    setHumidityData(cityHumidityData[selectedCity]);
+    // setHumidityData(cityHumidityData[selectedCity]);
     setNoiseData(cityNoiseData[selectedCity]);
   }, [selectedCity]);
 
@@ -93,10 +93,11 @@ function NoiseLevel() {
             Smart City Environment Monitoring System
           </h1>
           <div className="flex items-center gap-2">
-            <span>Cloudy</span>
-            <span>67F-71F</span>
             <a href="/" className="ml-2">
-              <span className="h-4 w-4">🏠</span>
+              <span className="h-4 w-4">
+                {" "}
+                <FaHome size={20} color="#FFFFFF" />
+              </span>
             </a>
           </div>
         </div>

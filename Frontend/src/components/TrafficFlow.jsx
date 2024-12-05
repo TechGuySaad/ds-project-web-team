@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import LineChart from "./Traffic/LineChart";
 import BarChart from "./Traffic/BarChart";
+import { FaHome } from "react-icons/fa";
 
 function TrafficFlow() {
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -17,7 +18,7 @@ function TrafficFlow() {
 
   useEffect(() => {
     // Fetch data for LineChart from Flask API with the selected city as a query parameter
-    fetch(`http://127.0.0.1:5000/api/monthly-congestion?city=${selectedCity}`)
+    fetch(`http://127.0.0.1:5002/api/monthly-congestion?city=${selectedCity}`)
       .then((response) => response.json())
       .then((data) => {
         setLineChartData(data);
