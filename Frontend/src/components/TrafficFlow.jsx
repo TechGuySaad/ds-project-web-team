@@ -75,10 +75,11 @@ function TrafficFlow() {
             Smart City Environment Monitoring System
           </h1>
           <div className="flex items-center gap-2">
-            <span>Cloudy</span>
-            <span>67F-71F</span>
             <a href="/" className="ml-2">
-              <span className="h-4 w-4">🏠</span>
+              <span className="h-4 w-4">
+                {" "}
+                <FaHome size={20} color="#FFFFFF" />
+              </span>
             </a>
           </div>
         </div>
